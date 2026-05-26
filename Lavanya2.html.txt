@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Task Management App</title>
+    <style>
+        body {
+            font-family: Arial;
+            background: #f4f4f4;
+            padding: 20px;
+        }
+
+
+        .container {
+            width: 400px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+
+        h2 {
+            text-align: center;
+        }
+
+
+        input {
+            width: 95%;
+            padding: 10px;
+            margin-top: 10px;
+        }
+
+
+        button {
+            padding: 10px;
+            margin-top: 10px;
+            background: blue;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+
+        li {
+            background: #eee;
+            padding: 10px;
+            margin-top: 10px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+
+        .delete {
+            background: red;
+        }
+    </style>
+</head>
+<body>
+
+
+<div class="container">
+    <h2>Task Management App</h2>
+
+
+    <input type="text" id="taskInput" placeholder="Enter Task">
+    <button onclick="addTask()">Add Task</button>
+
+
+    <ul id="taskList"></ul>
+</div>
+
+
+<script>
+    function addTask() {
+        let taskInput = document.getElementById("taskInput");
+        let taskText = taskInput.value;
+
+
+        if(taskText === "") {
+            alert("Please enter a task");
+            return;
+        }
+
+
+        let li = document.createElement("li");
+        li.innerHTML = `
+            ${taskText}
+            <button class="delete" onclick="deleteTask(this)">Delete</button>
+        `;
+
+
+        document.getElementById("taskList").appendChild(li);
+
+
+        taskInput.value = "";
+    }
+
+
+    function deleteTask(button) {
+        button.parentElement.remove();
+    }
+</script>
+
+
+</body>
+</html>
+
+
+<?php
+$host = "localhost";
+$user = "root";
+$password = "";
+$database = "taskdb";
+
+
+$conn = mysqli_connect($host, $user, $password, $database);
+
+
+if(!$conn){
+    die("Connection failed: " . mysqli_connect_error());
+}
+?>
+
+
+CREATE DATABASE taskdb;
+
+
+USE taskdb;
+
+
+CREATE TABLE tasks (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    task_name VARCHAR(255)
+);
+
+
+<?php
+include 'connect.php';
+
+
+if(isset($_POST['task'])) {
+    $task = $_POST['task'];
+
+
+    $sql = "INSERT INTO tasks(task_name) VALUES('$task')";
+
+
+    if(mysqli_query($conn, $sql)) {
+        echo "Task Added Successfully";
+    } else {
+        echo "Error";
+    }
+}
+?>
